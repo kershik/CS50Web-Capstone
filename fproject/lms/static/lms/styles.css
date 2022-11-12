@@ -1,0 +1,9 @@
+* {
+    box-sizing: border-box;
+}
+
+body {
+    background-color: #ffe5b4;
+    font-family: 'KG Neatly Printed', sans-serif;
+    font-size: 40px;
+}
