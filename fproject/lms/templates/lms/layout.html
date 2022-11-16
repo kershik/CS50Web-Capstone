@@ -16,6 +16,8 @@
                     <a href="{% url 'logout' %}">Log Out</a>
             {% else %}
                     <a href="{% url 'login' %}">Log In</a>
+                    <a href="{% url 'register' 'STUDENT' %}">RegisterStudent</a>
+                    <a href="{% url 'register' 'TEACHER' %}">RegisterTeacher</a>   
             {% endif %}
         </div>
 

@@ -25,6 +25,9 @@ class CustomUser(AbstractUser):
 class Group(models.Model):
     name = models.CharField(max_length=5)
 
+    def __str__(self):
+        return self.name
+
 class StudentManager(BaseUserManager):
     def get_queryset(self, *args, **kwargs):
         results = super().get_queryset(*args, **kwargs)
@@ -39,17 +42,16 @@ class Student(CustomUser):
         proxy = True
 
 class StudentProfile(models.Model):
-    CustomUser = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
+    user = models.OneToOneField(CustomUser, on_delete=models.CASCADE)
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='students', null=True, blank=True)
 
     def __str__(self):
-        return self.CustomUser.CustomUsername
+        return self.user.username
 
 @receiver(post_save, sender=Student)
-def create_CustomUser_profile(sender, instance, created, **kwargs):
+def create_user_profile(sender, instance, created, **kwargs):
     if created and instance.role == 'STUDENT':
-        StudentProfile.objects.create(CustomUser=instance)
-
+        StudentProfile.objects.create(user=instance)
 
 class TeacherManager(BaseUserManager):
     def get_queryset(self, *args, **kwargs):
@@ -67,17 +69,17 @@ class Teacher(CustomUser):
 
 class Subject(models.Model):
     name = models.CharField(max_length=20)
-    teachers = models.ManyToManyField(CustomUser, related_name='teachers')
+    teachers = models.ManyToManyField(Teacher, related_name='subjects')
 
 class Assignment(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='assignments')
-    creator = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='assignments')
+    creator = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='assignments')
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='assignments')
     content = models.CharField(max_length=10000) # how to implement
     answers = models.CharField(max_length=10000) # optional or not...
 
 class Submission(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='submissions')
-    student = models.ForeignKey(CustomUser, on_delete=models.CASCADE, related_name='submissions') 
+    student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='submissions') 
     content = models.CharField(max_length=10000)
     score = models.IntegerField() # set min and max?

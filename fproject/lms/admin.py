@@ -1,15 +1,25 @@
 from django.contrib import admin
-from .models import CustomUser, Student, StudentProfile, Teacher, Group, Subject, Student, Assignment, Submission
+from .models import CustomUser, Student, Teacher, StudentProfile, Group, Subject, Assignment, Submission
 from django.contrib.auth.admin import UserAdmin
-from django.contrib.auth.models import User
 
-# Register your models here.
-class UserProfileInline(admin.StackedInline):
-    model = CustomUser
-    can_delete = False
-
-class AccountsUserAdmin(UserAdmin):
-    inlines = [UserProfileInline]
-
-# admin.site.unregister(User)
-admin.site.register(CustomUser, AccountsUserAdmin)
+class CustomUserAdmin(UserAdmin):
+    fieldsets = (
+        *UserAdmin.fieldsets,
+        (
+            'Additional Field',
+            {
+                'fields':(
+                    'role',
+                )
+            }
+        )
+    )
+ # do anothing about this dry
+admin.site.register(CustomUser, CustomUserAdmin)
+admin.site.register(Student, CustomUserAdmin)
+admin.site.register(Teacher, CustomUserAdmin)
+admin.site.register(StudentProfile)
+admin.site.register(Group)
+admin.site.register(Subject)
+admin.site.register(Assignment)
+admin.site.register(Submission)

@@ -1,0 +1,24 @@
+{% extends "lms/layout.html" %}
+
+{% block body %}
+
+    <h2>Register</h2>
+
+    {% if message %}
+        <div>{{ message }}</div>
+    {% endif %}
+
+    <form action="{% url 'register' type %}" method="post">
+        {% csrf_token %}
+            <input autofocus type="text" name="username" placeholder="Username">
+            <input type="email" name="email" placeholder="Email Address">
+            <input type="text" name="first_name" placeholder="First Name">
+            <input type="text" name="last_name" placeholder="Last Name">
+            <input type="password" name="password" placeholder="Password">
+            <input type="password" name="confirmation" placeholder="Confirm Password">
+            <input type="submit" value="Register">
+    </form>
+
+    Already have an account? <a href="{% url 'login' %}">Log In here.</a>
+
+{% endblock %}
