@@ -1,0 +1,14 @@
+{% extends "lms/layout.html" %}
+{% load static %}
+
+{% block body %}
+    <div id="subjects-view"></div>
+    <div id="one-subject-view"></div>
+    <div id="one-assignment-view"></div>
+    <div id="submissions-view"></div>
+    <div id="notifications-view"></div>
+{% endblock %}
+
+{% block script %}
+    <script src="{% static 'lms/student.js' %}"></script>
+{% endblock %}

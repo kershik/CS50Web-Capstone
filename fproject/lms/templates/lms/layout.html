@@ -5,21 +5,31 @@
     <head>
         <title>Classroom</title>
         <link rel="stylesheet" href="{% static 'lms/styles.css' %}">
-        <link rel="stylesheet" href="https://fonts.cdnfonts.com/css/kg-neatly-printed">
+        <link href='https://fonts.googleapis.com/css?family=Nunito' rel='stylesheet'>
         {% block script %}
         {% endblock %}
     </head>
     <body>
 
-        <div class="topnav">
+        <div class="navbar">
             {% if user.is_authenticated %}
-                    <a href="{% url 'logout' %}">Log Out</a>
+                <a href="{% url 'logout' %}">Log Out</a>
+                <a href="#" id="subjects">Subjects</a>
+                <a href="#" id="submissions">Submissions</a>
+                <a href="#" id="notifications">Notifications</a>
             {% else %}
-                    <a href="{% url 'login' %}">Log In</a>
-                    <a href="{% url 'register' 'STUDENT' %}">RegisterStudent</a>
-                    <a href="{% url 'register' 'TEACHER' %}">RegisterTeacher</a>   
+                <a href="{% url 'login' %}">Log In</a>
+                <div class="dropdown">
+                    <button class="dropbtn">Register
+                        <i class="fa fa-caret-down"></i>
+                    </button>
+                    <div class="dropdown-content">
+                        <a href="{% url 'register' 'STUDENT' %}">As Student</a>
+                        <a href="{% url 'register' 'TEACHER' %}">As Teacher</a>  
+                    </div>
+                </div> 
             {% endif %}
-        </div>
+            </div>
 
         {% block body %}
         {% endblock %}

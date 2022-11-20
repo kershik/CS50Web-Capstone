@@ -1,17 +1,18 @@
-from .models import CustomUser, Student, Teacher
 from django.contrib.auth.forms import UserCreationForm
-from django import forms
 
-class CustomCreationForm(UserCreationForm):
+from .models import Student, Teacher
 
-    class Meta:
+class StudentCreationForm(UserCreationForm):
+
+    class Meta(UserCreationForm.Meta):
         model = Student
-        fields = ('username', 'first_name','last_name', 'password1' ,'password2',)
-    
-    def save(self, type):
-        if type == "STUDENT":
-            student = Student.objects.create_user()
-            return student
-        elif type == "TEACHER":
-            teacher = Teacher.objects.create_user()
-            return teacher
+        fields = ('username', 'email', 'first_name','last_name',)
+
+class TeacherCreationForm(UserCreationForm):
+
+    class Meta(UserCreationForm.Meta):
+        model = Teacher
+        fields = ('username', 'email', 'first_name','last_name',)
+
+
+
