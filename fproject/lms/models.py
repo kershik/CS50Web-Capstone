@@ -102,6 +102,7 @@ class Assignment(models.Model):
     subject = models.ForeignKey(Subject, on_delete=models.CASCADE, related_name='assignments')
     creator = models.ForeignKey(Teacher, on_delete=models.CASCADE, related_name='assignments')
     group = models.ForeignKey(Group, on_delete=models.CASCADE, related_name='assignments') # maybe manytomany
+    deadline = models.DateField()
 
     def __str__(self):
         return self.title
@@ -113,7 +114,8 @@ class Assignment(models.Model):
             'description': self.description,
             'subject': self.subject.title,
             'creator': self.creator.first_name+self.creator.last_name,
-            'group': self.group.name
+            'group': self.group.name, 
+            'deadline': self.deadline
         }
 
 class Question(models.Model):

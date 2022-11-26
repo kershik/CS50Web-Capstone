@@ -4,10 +4,35 @@
 {% block body %}
     <div id="subjects-view"></div>
     <div id="one-subject-view"></div>
+    <div id="one-assignment-view">
+        <div id="create">
+            <h3>New Assignment</h3>
+            <form id="create-assignment">
+                {{ form.as_p }}
+            </form>
+            <form style="display:none" id="question-form-empty">
+                <p>
+                    <label>Question: </label>
+                    <input type="text" name="text" value="Question"/>
+                </p>
+                <p>
+                    <label>Answer: </label>
+                    <input type="text" name="answer" value="Answer"/>
+                </p>
+            </form>
+            <h3>Questions</h3>
+            <div id="question-list"></div>
+            <button id="add-question">Add question</button>
+            <button id="save-assignment">Save</button>
+        </div>
+        <div id="show-assignment"></div>
+    </div>
     <div id="submissions-view"></div>
+    <div id="one-submission-view"></div>
     <div id="notifications-view"></div>
 {% endblock %}
 
 {% block script %}
-    <script src="{% static 'lms/student.js' %}"></script>
+    <script type="module" src="{% static 'lms/teacher.js' %}"></script>
+    <script type='module' src="{% static 'lms/functions.js' %}"></script>
 {% endblock %}

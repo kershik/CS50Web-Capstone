@@ -140,3 +140,10 @@ body {
     margin: 10px;
     cursor: pointer;
 }
+
+.question-form {
+    border: 1px dashed peru;
+    border-radius: 5px;
+    padding: 5px;
+    margin-bottom: 5px;
+}
