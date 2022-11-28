@@ -118,8 +118,131 @@ function loadAssignment(assign_id) {
     .then(assignment => {
         console.log(assignment);
 
-        // showAssignment(assignment);
+        showAssignment(assignment);
     })
+}
+
+function showAssignment(assignment) {
+    const assignmentView = document.getElementById('one-assignment-view');
+    assignmentView.style.display = 'block';
+    document.getElementById('show-assignment').style.display = 'block';
+    document.getElementById('questions-container').style.display = 'none';
+    document.getElementById('subjects-view').style.display = 'none';
+    document.getElementById('notifications-view').style.display = 'none';
+    document.getElementById('submissions-view').style.display = 'none';
+    document.getElementById('one-subject-view').style.display = 'none';
+    document.getElementById('one-submission-view').style.display = 'none';
+
+
+    const showAssignDiv = document.getElementById('show-assignment');
+    showAssignDiv.innerHTML = '';
+    const title = createEl('h3', showAssignDiv, 'assignment-title');
+    title.innerHTML = assignment.title;
+    const creator = createEl('div', showAssignDiv, 'assignment-creator');
+    creator.innerHTML = `<strong>Creator</strong>: ${assignment.creator}`;
+    const deadline = createEl('div', showAssignDiv, 'assignment-deadline');
+    deadline.innerHTML = `<strong>Deadline</strong>: ${assignment.deadline}`;
+    const description = createEl('div', showAssignDiv, 'assignment-description');
+    description.innerHTML = assignment.description;
+
+    if (document.getElementById('create')) {
+        showQuestionsTeacher(assignment.questions);
+    } else {
+        const buttonStartAssignment = 
+        createEl('button', showAssignDiv, 'button-start-assignment');
+        buttonStartAssignment.onclick = showQuestionsStudent(assignment);
+    }
+}
+
+function showQuestionsTeacher(questions) {
+    document.getElementById('create').style.display = 'none';
+    const qContainer = document.getElementById('questions-container');
+    qContainer.style.display = 'block';
+    for (const question of questions) {
+        const questionDiv = createEl('div', qContainer);
+        questionDiv.setAttribute('class', 'question-div');
+
+        const questionText = createEl('div', questionDiv);
+        questionText.setAttribute('class', 'question-text');
+        questionText.innerHTML = `Question: ${question.text}`;
+
+        const questionAnswer = createEl('div', questionDiv);
+        questionAnswer.setAttribute('class', 'question-answer');
+        questionAnswer.innerHTML = `Answer: ${question.answer}`;
+    }
+}
+
+function showQuestionsStudent(assignment) {
+    document.getElementById('show-assignment').style.display = 'none';
+    const qContainer = document.getElementById('questions-container');
+    qContainer.style.display = 'block';
+
+    const assignmentTitle = createEl('h3', qContainer);
+    assignmentTitle.innerHTML = assignment.title;
+
+    const progressBar = createEl('div', qContainer, 'progress-bar');
+
+    fetch('/create/submission', {
+        method: 'POST',
+        body: JSON.stringify({
+            assignment_id: assignment.id
+        })
+    })
+    .then(response => response.json())
+    .then(result => {
+        console.log(result);
+        showQuestion(assignment.questions, 0, qContainer, result.id);
+    })
+}
+
+// very stupid realization
+function showQuestion(questions, i, container, submission_id) {
+
+    const qLength = questions.length;
+    const progressBar = document.getElementById('progress-bar');
+    progressBar.innerHTML = `Question ${i+1} out of ${qLength}`;
+
+    const questionDiv = createEl('div', container);
+    questionDiv.setAttribute('class', 'question-div');
+
+    const questionText = createEl('div', questionDiv);
+    questionText.setAttribute('class', 'question-text');
+    questionText.innerHTML = `Question: ${questions[i].text}`;
+
+    const answerForm = createEl('form', container, 'answer-form');
+    const answerStudent = createEl('input', answerForm);
+
+    const nextButton = createEl('button', container, 'next-button');
+    if (i===qLength-1) {
+        nextButton.innerHTML = 'Finish';
+    } else {
+        nextButton.innerHTML = 'Next';
+    }
+    nextButton.onclick = () => {
+        fetch('/create/answer',  {
+            method: 'POST',
+            body: JSON.stringify({
+                text: answerStudent.value,
+                question_id: questions[i].id,
+                submission_id: submission_id
+            })
+        })
+        .then(response => response.json())
+        .then(result => {
+            console.log(result);
+            i++;
+            if (i===qLength) {
+                console.log('the end')
+                // showSubmission(submission_id);
+            } else {
+            showQuestion(questions, i, container, submission_id);
+            }
+        })
+    }
+}
+
+function showSubmission(submission_id) {
+    // stopped here
 }
 
 export {

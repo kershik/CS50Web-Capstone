@@ -13,11 +13,11 @@
             <form style="display:none" id="question-form-empty">
                 <p>
                     <label>Question: </label>
-                    <input type="text" name="text" value="Question"/>
+                    <input type="text" name="text"/>
                 </p>
                 <p>
                     <label>Answer: </label>
-                    <input type="text" name="answer" value="Answer"/>
+                    <input type="text" name="answer"/>
                 </p>
             </form>
             <h3>Questions</h3>
@@ -26,6 +26,7 @@
             <button id="save-assignment">Save</button>
         </div>
         <div id="show-assignment"></div>
+        <div id="questions-container"></div>
     </div>
     <div id="submissions-view"></div>
     <div id="one-submission-view"></div>
@@ -34,5 +35,4 @@
 
 {% block script %}
     <script type="module" src="{% static 'lms/teacher.js' %}"></script>
-    <script type='module' src="{% static 'lms/functions.js' %}"></script>
 {% endblock %}

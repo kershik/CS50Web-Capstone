@@ -110,12 +110,13 @@ class Assignment(models.Model):
     def serialize(self):
         return {
             'id': self.id,
-            'title': self.title,
+            'title': self.title.capitalize(),
             'description': self.description,
             'subject': self.subject.title,
-            'creator': self.creator.first_name+self.creator.last_name,
+            'creator': self.creator.first_name+' '+self.creator.last_name,
             'group': self.group.name, 
-            'deadline': self.deadline
+            'deadline': self.deadline, 
+            'questions': [q.serialize() for q in self.questions.all()]
         }
 
 class Question(models.Model):
@@ -123,13 +124,21 @@ class Question(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='questions')
     answer = models.CharField(max_length=10000, blank=True, null=True) # how to implement
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'text': self.text,
+            'answer': self.answer
+        }
+
 class Submission(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='submissions')
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='submissions') 
     score = models.IntegerField() # set min and max?
 
 class StudentAnswer(models.Model):
-    answer = models.CharField(max_length=10000)
+    text = models.CharField(max_length=10000)
+    question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='student_answers')
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE, 
-                                   related_name='student_answer')
+                                   related_name='student_answers')
 

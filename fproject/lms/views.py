@@ -8,7 +8,7 @@ from django.contrib.auth.decorators import login_required
 import json
 from datetime import datetime
 
-from .models import CustomUser, Student, Teacher, StudentProfile, Group, Subject, Assignment, Question
+from .models import CustomUser, Student, Teacher, StudentProfile, Group, Subject, Assignment, Question, Submission, StudentAnswer
 from .forms import StudentCreationForm, TeacherCreationForm, AssignmentCreationForm
 
 
@@ -179,6 +179,52 @@ def create_question(request):
         "message": "Question created successfully."
         }, status=201)
 
+@csrf_exempt
+def create_submission(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+    data = json.loads(request.body)
+    assignment_id = data.get('assignment_id', '')
+
+    assignment = Assignment.objects.get(id=assignment_id)
+
+    submission = Submission(
+        assignment=assignment,
+        student=request.user,
+        score=0
+    )
+    submission.save()
+
+    return JsonResponse({
+        "message": "Submission created successfully.",
+        "id": submission.id
+        }, status=201)
+
+@csrf_exempt
+def create_answer(request):
+    if request.method != "POST":
+        return JsonResponse({"error": "POST request required."}, status=400)
+
+    data = json.loads(request.body)
+    text = data.get('text', '')
+    question_id = data.get('question_id', '')
+    submission_id = data.get('submission_id', '')
+
+    question = Question.objects.get(id=question_id)
+    submission = Submission.objects.get(id=submission_id)
+
+    answer = StudentAnswer(
+        text=text,
+        question=question,
+        submission=submission
+    )
+
+    return JsonResponse({
+        "message": "Answer created successfully."
+        }, status=201)
+
+    
 
  
 

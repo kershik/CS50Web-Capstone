@@ -17,6 +17,9 @@ document.addEventListener('DOMContentLoaded', () => {
 function createAssignment() {   
     const newAssignView = document.getElementById('one-assignment-view');
     newAssignView.style.display = 'block';
+    document.getElementById('create').style.display = 'block';
+    document.getElementById('questions-container').style.display = 'none';
+    document.getElementById('show-assignment').style.display = 'none';
     document.getElementById('subjects-view').style.display = 'none';
     document.getElementById('notifications-view').style.display = 'none';
     document.getElementById('submissions-view').style.display = 'none';
@@ -62,7 +65,7 @@ function createAssignment() {
         .then(response => response.json())
         .then(result => {
                 console.log(result);
-                createQuestions(result.id)
+                createQuestions(result.id);
             });
     });
 
@@ -70,13 +73,12 @@ function createAssignment() {
 
 function createQuestions(assignment_id) {
     const questions = document.getElementsByClassName('question-form');
-    for (let i = 0; i < questions.length; i++) {
-        const question = questions[i].elements;
+    for (const question of questions) {
         fetch('/create/question', {
             method: 'POST',
             body: JSON.stringify({
-                text: question['text'].value,
-                answer: question['answer'].value,
+                text: question.elements['text'].value,
+                answer: question.elements['answer'].value,
                 assignment_id: assignment_id
             })
         })
@@ -85,7 +87,7 @@ function createQuestions(assignment_id) {
                 console.log(result);
             });
     }
-
+    document.getElementById('create').style.display = 'none';
     loadAssignment(assignment_id);
 }
 

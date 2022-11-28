@@ -14,5 +14,7 @@ urlpatterns = [
     path("subjects/<int:subj_id>/assignments", views.assigns_view, name="assignments"),
     path("assignments/<int:assign_id>", views.assign_view, name="assignment"),
     path('create/assignment', views.create_assignment, name="create_assignment"),
-    path('create/question', views.create_question, name="create_question")
+    path('create/question', views.create_question, name="create_question"),
+    path('create/submission', views.create_submission, name='create_submission'),
+    path('create/answer', views.create_answer, name='create-answer')
 ]
