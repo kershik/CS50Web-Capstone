@@ -47,6 +47,12 @@ function createAssignment() {
         newQuestion.setAttribute('class', 'question-form');
         const questionCount = document.getElementsByClassName('question-form').length;
         newQuestion.setAttribute('id', 'question-form-'+questionCount);
+        const buttonDeleteQuestion = createEl('button', newQuestion);
+        buttonDeleteQuestion.innerHTML = 'Delete Question';
+        buttonDeleteQuestion.setAttribute('class', 'delete-question');
+        buttonDeleteQuestion.onclick = () => {
+            newQuestion.remove();
+        }
         questionList.append(newQuestion);
     }
 
