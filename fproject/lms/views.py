@@ -192,7 +192,7 @@ def create_submission(request):
     submission = Submission(
         assignment=assignment,
         student=request.user,
-        score=0
+        score=-1
     )
     submission.save()
 
@@ -219,12 +219,63 @@ def create_answer(request):
         question=question,
         submission=submission
     )
+    answer.save()
 
     return JsonResponse({
         "message": "Answer created successfully."
         }, status=201)
 
-    
+def submission_view(request, submission_id):
+    if request.method == "GET":
+        submission = Submission.objects.get(id=submission_id)
+        if submission.score < 0:
+            score = 0
+            for student_answer in submission.student_answers.all():
+                if student_answer.text == student_answer.question.answer:
+                    score += 1
+            submission.score = score * 100 // submission.student_answers.count()
+            submission.save()
+        return JsonResponse(submission.serialize(), safe=False)
+    else:
+        return JsonResponse({
+            "error": "GET request required."
+        }, status=400)
 
+    
+def submissions_view(request): 
+    if request.method == "GET":
+        if request.user.role == 'STUDENT':
+            submissions = Submission.objects.filter(student=request.user)
+        elif request.user.role == 'TEACHER':
+            subject_id = request.GET.get('subject')
+            subject = Subject.objects.get(id=subject_id)
+            student_id = request.GET.get('student')
+            student = Student.objects.get(id=student_id)
+            assignments = Assignment.objects.filter(subject=subject)
+            submissions = Submission.objects.filter(student=student, assignment__in=assignments)
+        return JsonResponse([s.serialize() for s in submissions], safe=False)
+    else:
+        return JsonResponse({
+            "error": "GET request required."
+        }, status=400)
  
 
+def groups_view(request, subj_id):
+    if request.method == "GET":
+        subject = Subject.objects.get(id=subj_id)
+        groups = subject.groups.all()
+        return JsonResponse([g.serialize() for g in groups], safe=False)
+    else:
+        return JsonResponse({
+            "error": "GET request required."
+        }, status=400)
+
+def students_view(request):
+    if request.method == "GET":
+        group = Group.objects.get(id=request.GET.get('group'))
+        student_profiles = StudentProfile.objects.filter(group=group)
+        return JsonResponse([sp.user.serialize() for sp in student_profiles], safe=False)
+    else:
+        return JsonResponse({
+            "error": "GET request required."
+        }, status=400)

@@ -24,6 +24,7 @@ class CustomUser(AbstractUser):
 
     def serialize(self):
         return {
+            "id": self.id,
             "username": self.username,
             "name": self.first_name + self.last_name,
             "email": self.email
@@ -37,6 +38,7 @@ class Group(models.Model):
 
     def serialize(self):
         return {
+            "id": self.id,
             "name": self.name
         }
 
@@ -122,7 +124,7 @@ class Assignment(models.Model):
 class Question(models.Model):
     text = models.CharField(max_length=10000)
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='questions')
-    answer = models.CharField(max_length=10000, blank=True, null=True) # how to implement
+    answer = models.CharField(max_length=10000) # how to implement
 
     def serialize(self):
         return {
@@ -136,9 +138,24 @@ class Submission(models.Model):
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='submissions') 
     score = models.IntegerField() # set min and max?
 
+    def serialize(self):
+        return {
+            'id': self.id,
+            'student': self.student.first_name+self.student.last_name,
+            'assignment': self.assignment.serialize(),
+            'score': self.score,
+            'answers': [a.serialize() for a in self.student_answers.all()]
+        }
+
 class StudentAnswer(models.Model):
     text = models.CharField(max_length=10000)
     question = models.ForeignKey(Question, on_delete=models.CASCADE, related_name='student_answers')
     submission = models.ForeignKey(Submission, on_delete=models.CASCADE, 
                                    related_name='student_answers')
+
+    def serialize(self):
+        return {
+            'id': self.id,
+            'text': self.text
+        }
 

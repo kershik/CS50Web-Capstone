@@ -9,7 +9,7 @@ html {
 }
 
 body {
-    background-color: #fff9e3;
+    background-color: #ffffff;
     font-family: 'Nunito';
     height: 100%;
     font-size: 17px; 
@@ -19,7 +19,7 @@ body {
 /* Navbar container */
 .navbar {
     overflow: hidden;
-    background-color: rgba(255, 111, 0, 0.856);
+    background-color: rgba(0, 42, 255, 0.856);
     font-family: inherit;
     font-size: 16px;
 }
@@ -124,8 +124,8 @@ body {
     text-align: center;
 }
 
-.subj-div {
-    border: 1px dashed rgb(131, 59, 4);
+.subj-div, .group-div {
+    border: 1px dashed rgb(21, 4, 131);
     border-radius: 5px;
     padding: 10px 15px;
     margin: 10px;
@@ -134,10 +134,36 @@ body {
 
 /* change this style later */
 .assign-div {
-    border: 1px dashed rgb(131, 59, 4);
+    border: 1px dashed rgb(21, 4, 131);
     border-radius: 5px;
     padding: 10px;
     margin: 10px;
+    cursor: pointer;
+}
+
+.assignment-title {
+    margin: 5px 0px;
+    font-size: 20px;
+    font-weight: bold;
+}
+
+#one-assignment-title {
+    font-size: 30px;
+    color:rgba(1, 6, 30, 0.856);
+}
+
+#one-assignment-description {
+    margin: 20px 0px;
+}
+
+#button-start-assignment {
+    background-color:rgba(255, 111, 0, 0.856);
+    color: whitesmoke;
+    font-size: 15px;
+    font-weight: bold;
+    padding: 10px;
+    border: none;
+    border-radius: 5px;
     cursor: pointer;
 }
 
@@ -146,4 +172,43 @@ body {
     border-radius: 5px;
     padding: 5px;
     margin-bottom: 5px;
+}
+
+.answer-input {
+    width: 100%;
+    margin: 5px 0px;
+    padding: 5px;
+    border: 1px solid rgb(21, 4, 131);
+    border-radius: 5px;
+}
+
+.question-div, .question-div-right, .question-div-wrong {
+    padding: 10px 5px;
+    margin: 5px 0px;
+    border: 1px dashed rgb(21, 4, 131);
+    border-radius: 5px;
+
+}
+
+.question-div-right {
+    background-color: rgb(205, 233, 187);
+}
+
+.question-div-wrong {
+    background-color: rgb(252, 185, 185);
+}
+
+table{
+    border-collapse: collapse;
+    border-spacing: 0;
+    width: 100%;
+    margin-top: 10px;
+}
+th, td{
+    padding: 10px 20px;
+    border: 1px dashed peru;
+}
+
+th {
+    background-color:wheat;
 }

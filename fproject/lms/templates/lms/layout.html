@@ -16,9 +16,7 @@
                 <a href="{% url 'logout' %}">Log Out</a>
                 <a href="#" id="subjects">Subjects</a>
                 <a href="#" id="submissions">Submissions</a>
-                {% if user.role == 'STUDENT' %}
-                    <a href="#" id="notifications">Notifications</a>
-                {% elif user.role == 'TEACHER' %}
+                {% if user.role == 'TEACHER' %}
                     <a href="#" id="new-assignment">New Assignment</a>
                 {% endif %}
             {% else %}

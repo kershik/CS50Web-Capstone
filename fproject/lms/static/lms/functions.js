@@ -15,7 +15,6 @@ function showSubjects() {
     document.getElementById('submissions-view').style.display = 'none';
     document.getElementById('one-submission-view').style.display = 'none';
     document.getElementById('one-subject-view').style.display = 'none';
-    document.getElementById('notifications-view').style.display = 'none';
     document.getElementById('one-assignment-view').style.display = 'none';
 
     const heading = createEl('h2', subjsView, 'subj-heading');
@@ -67,7 +66,6 @@ function showSubject(subject) {
     subjView.style.display = 'block';
     subjView.innerHTML = '';
     document.getElementById('subjects-view').style.display = 'none';
-    document.getElementById('notifications-view').style.display = 'none';
     document.getElementById('submissions-view').style.display = 'none';
     document.getElementById('one-assignment-view').style.display = 'none';
     document.getElementById('one-submission-view').style.display = 'none';
@@ -100,10 +98,11 @@ function createAssignDiv(assignment, container) {
     const assignDiv = createEl('div', container);
     assignDiv.setAttribute('class', 'assign-div');
 
-    const assignTitle = createEl('h3', assignDiv);
-    assignTitle.innerHTML = assignment.title; // maybe set class later
+    const assignTitle = createEl('div', assignDiv);
+    assignTitle.setAttribute('class', 'assignment-title');
+    assignTitle.innerHTML = assignment.title; 
 
-    const assignCreator = createEl('h4', assignDiv);
+    const assignCreator = createEl('div', assignDiv);
     assignCreator.innerHTML = assignment.creator; // maybe set class later
 
     const assignDescription = createEl('div', assignDiv);
@@ -125,24 +124,23 @@ function loadAssignment(assign_id) {
 function showAssignment(assignment) {
     const assignmentView = document.getElementById('one-assignment-view');
     assignmentView.style.display = 'block';
-    document.getElementById('show-assignment').style.display = 'block';
+    const showAssignDiv = document.getElementById('show-assignment');
+    showAssignDiv.style.display = 'block';
+    showAssignDiv.innerHTML = '';
     document.getElementById('questions-container').style.display = 'none';
     document.getElementById('subjects-view').style.display = 'none';
-    document.getElementById('notifications-view').style.display = 'none';
     document.getElementById('submissions-view').style.display = 'none';
     document.getElementById('one-subject-view').style.display = 'none';
     document.getElementById('one-submission-view').style.display = 'none';
 
 
-    const showAssignDiv = document.getElementById('show-assignment');
-    showAssignDiv.innerHTML = '';
-    const title = createEl('h3', showAssignDiv, 'assignment-title');
+    const title = createEl('h3', showAssignDiv, 'one-assignment-title');
     title.innerHTML = assignment.title;
-    const creator = createEl('div', showAssignDiv, 'assignment-creator');
+    const creator = createEl('div', showAssignDiv, 'one-assignment-creator');
     creator.innerHTML = `<strong>Creator</strong>: ${assignment.creator}`;
-    const deadline = createEl('div', showAssignDiv, 'assignment-deadline');
+    const deadline = createEl('div', showAssignDiv, 'one-assignment-deadline');
     deadline.innerHTML = `<strong>Deadline</strong>: ${assignment.deadline}`;
-    const description = createEl('div', showAssignDiv, 'assignment-description');
+    const description = createEl('div', showAssignDiv, 'one-assignment-description');
     description.innerHTML = assignment.description;
 
     if (document.getElementById('create')) {
@@ -150,7 +148,10 @@ function showAssignment(assignment) {
     } else {
         const buttonStartAssignment = 
         createEl('button', showAssignDiv, 'button-start-assignment');
-        buttonStartAssignment.onclick = showQuestionsStudent(assignment);
+        buttonStartAssignment.innerHTML = 'Start Assignment';
+        buttonStartAssignment.onclick = function() {
+            showQuestionsStudent(assignment);
+        };
     }
 }
 
@@ -173,14 +174,15 @@ function showQuestionsTeacher(questions) {
 }
 
 function showQuestionsStudent(assignment) {
-    document.getElementById('show-assignment').style.display = 'none';
-    const qContainer = document.getElementById('questions-container');
-    qContainer.style.display = 'block';
-
-    const assignmentTitle = createEl('h3', qContainer);
+    const showAssignmentDiv = document.getElementById('show-assignment');
+    showAssignmentDiv.innerHTML = '';
+    const assignmentTitle = createEl('h3', showAssignmentDiv);
     assignmentTitle.innerHTML = assignment.title;
 
-    const progressBar = createEl('div', qContainer, 'progress-bar');
+    const progressBar = createEl('div', showAssignmentDiv, 'progress-bar');
+
+    const qContainer = document.getElementById('questions-container');
+    qContainer.style.display = 'block';
 
     fetch('/create/submission', {
         method: 'POST',
@@ -198,6 +200,7 @@ function showQuestionsStudent(assignment) {
 // very stupid realization
 function showQuestion(questions, i, container, submission_id) {
 
+    container.innerHTML = '';
     const qLength = questions.length;
     const progressBar = document.getElementById('progress-bar');
     progressBar.innerHTML = `Question ${i+1} out of ${qLength}`;
@@ -207,17 +210,25 @@ function showQuestion(questions, i, container, submission_id) {
 
     const questionText = createEl('div', questionDiv);
     questionText.setAttribute('class', 'question-text');
-    questionText.innerHTML = `Question: ${questions[i].text}`;
+    questionText.innerHTML = `<strong>Question</strong>: ${questions[i].text}`;
 
-    const answerForm = createEl('form', container, 'answer-form');
+    const answerForm = createEl('form', questionDiv, 'answer-form');
     const answerStudent = createEl('input', answerForm);
+    answerStudent.setAttribute('type', 'text');
+    answerStudent.setAttribute('class', 'answer-input');
 
     const nextButton = createEl('button', container, 'next-button');
+    nextButton.disabled = true;
     if (i===qLength-1) {
         nextButton.innerHTML = 'Finish';
     } else {
         nextButton.innerHTML = 'Next';
     }
+
+    answerStudent.addEventListener('keyup', () => {
+        nextButton.disabled = false;
+    })
+
     nextButton.onclick = () => {
         fetch('/create/answer',  {
             method: 'POST',
@@ -232,17 +243,96 @@ function showQuestion(questions, i, container, submission_id) {
             console.log(result);
             i++;
             if (i===qLength) {
-                console.log('the end')
-                // showSubmission(submission_id);
+                loadSubmission(submission_id);
             } else {
-            showQuestion(questions, i, container, submission_id);
+                showQuestion(questions, i, container, submission_id);
             }
         })
     }
 }
 
-function showSubmission(submission_id) {
-    // stopped here
+function loadSubmission(submission_id) {
+    fetch('/submissions/'+submission_id)
+    .then(response => response.json())
+    .then(submission => {
+        console.log(submission);
+
+        showSubmission(submission);
+    })
+}
+
+function showSubmission(submission) {
+    const submissionView = document.getElementById('one-submission-view');
+    submissionView.style.display = 'block';
+    submissionView.innerHTML = '';
+    document.getElementById('subjects-view').style.display = 'none';
+    document.getElementById('submissions-view').style.display = 'none';
+    document.getElementById('one-subject-view').style.display = 'none';
+    document.getElementById('one-assignment-view').style.display = 'none';
+
+    const submissionTitle = createEl('h3', submissionView, 'submission-title');
+    submissionTitle.innerHTML = `Submission: ${submission.assignment.title}`;    
+
+    const submissionStudent = createEl('div', submissionView, 'submission-student');
+    submissionStudent.innerHTML = `Student: ${submission.student}`;
+
+    const submissionScore = createEl('div', submissionView, 'submission-score');
+    submissionScore.innerHTML = `Score: ${submission.score}%`;
+
+    for (let i = 0; i < submission.answers.length; i++) {
+        const question = submission.assignment.questions[i];
+        const answer = submission.answers[i];
+
+        const questionDiv = createEl('div', submissionView);
+        if (question.answer === answer.text) {
+            questionDiv.setAttribute('class', 'question-div-right');
+        } else {
+            questionDiv.setAttribute('class', 'question-div-wrong');
+        }
+
+        const questionText = createEl('div', questionDiv);
+        questionText.setAttribute('class', 'question-text');
+        questionText.innerHTML = `<strong>Question</strong>: ${question.text}`;
+
+        const questionAnswer = createEl('div', questionDiv);
+        questionAnswer.setAttribute('class', 'question-answer');
+        questionAnswer.innerHTML = `<strong>Your Answer</strong>: ${answer.text}`;
+    }
+
+}
+
+function createSubmissionTable(container, student_id, subject_id) {
+    const table = createEl('table', container, 'submissions-table');
+    const thead = createEl('thead', table, 'table-head');
+    const tbody = createEl('tbody', table, 'table-body');
+
+    const rowHead = createEl('tr', thead);
+
+    for (const el of ['Assignment', 'Subject', 'Score']) {
+        const heading = createEl('th', rowHead);
+        heading.innerHTML = el;
+    }
+
+    let url = '/submissions';
+    if (student_id && subject_id) {
+        url += `?student=${student_id}&subject=${subject_id}`;
+    }
+    fetch(url)
+    .then(response => response.json())
+    .then(submissions => {
+        console.log(submissions);
+
+        submissions.forEach(submission => {
+            const row = createEl('tr', tbody);
+            const assignment = submission.assignment.title;
+            const subject = submission.assignment.subject;
+            const score = submission.score === -1 ? 'Not scored' : submission.score;
+            for (const el of [assignment, subject, score]) {
+                const rowData = createEl('td', row);
+                rowData.innerHTML = el;
+            }
+        });
+    });
 }
 
 export {
@@ -251,5 +341,6 @@ export {
     createEl,
     loadSubjects, 
     loadAssingnments,
-    loadAssignment
+    loadAssignment,
+    createSubmissionTable
 };
