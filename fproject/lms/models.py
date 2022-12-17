@@ -2,6 +2,7 @@ from django.db import models
 from django.contrib.auth.base_user import BaseUserManager
 from django.db.models.signals import post_save
 from django.dispatch import receiver
+from datetime import datetime
 
 
 # Create your models here.
@@ -117,7 +118,8 @@ class Assignment(models.Model):
             'subject': self.subject.title,
             'creator': self.creator.first_name+' '+self.creator.last_name,
             'group': self.group.name, 
-            'deadline': self.deadline, 
+            'deadline': self.deadline,
+            'opened': 'yes' if self.deadline >= datetime.now().date() else 'no',
             'questions': [q.serialize() for q in self.questions.all()]
         }
 
@@ -136,14 +138,16 @@ class Question(models.Model):
 class Submission(models.Model):
     assignment = models.ForeignKey(Assignment, on_delete=models.CASCADE, related_name='submissions')
     student = models.ForeignKey(Student, on_delete=models.CASCADE, related_name='submissions') 
-    score = models.IntegerField() # set min and max?
+    score = models.IntegerField()
+    date = models.DateField()
 
     def serialize(self):
         return {
             'id': self.id,
-            'student': self.student.first_name+self.student.last_name,
+            'student': self.student.first_name+' '+self.student.last_name,
             'assignment': self.assignment.serialize(),
             'score': self.score,
+            'date': self.date,
             'answers': [a.serialize() for a in self.student_answers.all()]
         }
 

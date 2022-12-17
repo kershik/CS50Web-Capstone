@@ -146,12 +146,17 @@ function showAssignment(assignment) {
     if (document.getElementById('create')) {
         showQuestionsTeacher(assignment.questions);
     } else {
-        const buttonStartAssignment = 
-        createEl('button', showAssignDiv, 'button-start-assignment');
-        buttonStartAssignment.innerHTML = 'Start Assignment';
-        buttonStartAssignment.onclick = function() {
-            showQuestionsStudent(assignment);
-        };
+        if (assignment.opened === 'no') {
+            const closed = createEl('div', showAssignDiv, 'closed-assignment');
+            closed.innerHTML = 'Sorry! This assignment is closed!';
+        } else {
+            const buttonStartAssignment = 
+            createEl('button', showAssignDiv, 'button-start-assignment');
+            buttonStartAssignment.innerHTML = 'Start Assignment';
+            buttonStartAssignment.onclick = function() {
+                showQuestionsStudent(assignment);
+            };
+        }
     }
 }
 
@@ -159,6 +164,7 @@ function showQuestionsTeacher(questions) {
     document.getElementById('create').style.display = 'none';
     const qContainer = document.getElementById('questions-container');
     qContainer.style.display = 'block';
+    qContainer.innerHTML = '';
     for (const question of questions) {
         const questionDiv = createEl('div', qContainer);
         questionDiv.setAttribute('class', 'question-div');
@@ -183,11 +189,12 @@ function showQuestionsStudent(assignment) {
 
     const qContainer = document.getElementById('questions-container');
     qContainer.style.display = 'block';
+    qContainer.innerHTML = '';
 
     fetch('/create/submission', {
         method: 'POST',
         body: JSON.stringify({
-            assignment_id: assignment.id
+            assignment_id: assignment.id,
         })
     })
     .then(response => response.json())
@@ -197,7 +204,7 @@ function showQuestionsStudent(assignment) {
     })
 }
 
-// very stupid realization
+
 function showQuestion(questions, i, container, submission_id) {
 
     container.innerHTML = '';
@@ -308,7 +315,7 @@ function createSubmissionTable(container, student_id, subject_id) {
 
     const rowHead = createEl('tr', thead);
 
-    for (const el of ['Assignment', 'Subject', 'Score']) {
+    for (const el of ['Assignment', 'Subject', 'Date', 'Score']) {
         const heading = createEl('th', rowHead);
         heading.innerHTML = el;
     }
@@ -327,7 +334,7 @@ function createSubmissionTable(container, student_id, subject_id) {
             const assignment = submission.assignment.title;
             const subject = submission.assignment.subject;
             const score = submission.score === -1 ? 'Not scored' : submission.score;
-            for (const el of [assignment, subject, score]) {
+            for (const el of [assignment, subject, submission.date, score]) {
                 const rowData = createEl('td', row);
                 rowData.innerHTML = el;
             }

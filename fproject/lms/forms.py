@@ -22,5 +22,9 @@ class AssignmentCreationForm(forms.ModelForm):
         model = Assignment
         fields = ('title', 'description', 'subject', 'group', 'deadline',)
 
+    def __init__(self, choices, *args, **kwargs):
+        super(AssignmentCreationForm, self).__init__(*args, **kwargs)
+        self.fields['subject'] = forms.ModelChoiceField(queryset=choices)
+
 
 

@@ -20,7 +20,8 @@ def student_view(request):
     return render(request, "lms/student.html")
 
 def teacher_view(request):
-    form = AssignmentCreationForm()
+    subjects = Subject.objects.filter(teachers__id=request.user.id)
+    form = AssignmentCreationForm(choices=subjects)
     return render(request, "lms/teacher.html", {
             'form': form
         })   
@@ -192,7 +193,8 @@ def create_submission(request):
     submission = Submission(
         assignment=assignment,
         student=request.user,
-        score=-1
+        score=-1,
+        date=datetime.now().date()
     )
     submission.save()
 

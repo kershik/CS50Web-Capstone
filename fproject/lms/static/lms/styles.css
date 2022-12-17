@@ -154,6 +154,15 @@ body {
 
 #one-assignment-description {
     margin: 20px 0px;
+    font-style: italic;
+}
+
+#closed-assignment {
+    width: 100%;
+    font-size: 25px;
+    color: rgb(72, 16, 16);
+    font-weight: bold;
+    text-align: center;
 }
 
 #button-start-assignment {
