@@ -79,22 +79,24 @@ function createAssignment() {
 
 function createQuestions(assignment_id) {
     const questions = document.getElementsByClassName('question-form');
-    for (const question of questions) {
+    for (let i = 0; i < questions.length; i++) {
         fetch('/create/question', {
             method: 'POST',
             body: JSON.stringify({
-                text: question.elements['text'].value,
-                answer: question.elements['answer'].value,
+                text: questions[i].elements['text'].value,
+                answer: questions[i].elements['answer'].value,
                 assignment_id: assignment_id
             })
         })
         .then(response => response.json())
         .then(result => {
                 console.log(result);
+                if (i === questions.length-1) {
+                    document.getElementById('create').style.display = 'none';
+                    loadAssignment(assignment_id);
+                }
             });
     }
-    document.getElementById('create').style.display = 'none';
-    loadAssignment(assignment_id);
 }
 
 function showSubmissions() {
