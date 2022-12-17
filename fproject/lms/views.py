@@ -193,7 +193,7 @@ def create_submission(request):
     submission = Submission(
         assignment=assignment,
         student=request.user,
-        score=-1,
+        score=0,
         date=datetime.now().date()
     )
     submission.save()
@@ -216,12 +216,16 @@ def create_answer(request):
     question = Question.objects.get(id=question_id)
     submission = Submission.objects.get(id=submission_id)
 
-    answer = StudentAnswer(
+    student_answer = StudentAnswer(
         text=text,
         question=question,
         submission=submission
     )
-    answer.save()
+    student_answer.save()
+
+    if student_answer.text == question.answer:
+            submission.score += 1 * 100 // question.assignment.questions.count()
+    submission.save()
 
     return JsonResponse({
         "message": "Answer created successfully."
@@ -230,13 +234,6 @@ def create_answer(request):
 def submission_view(request, submission_id):
     if request.method == "GET":
         submission = Submission.objects.get(id=submission_id)
-        if submission.score < 0:
-            score = 0
-            for student_answer in submission.student_answers.all():
-                if student_answer.text == student_answer.question.answer:
-                    score += 1
-            submission.score = score * 100 // submission.student_answers.count()
-            submission.save()
         return JsonResponse(submission.serialize(), safe=False)
     else:
         return JsonResponse({

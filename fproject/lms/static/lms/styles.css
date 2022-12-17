@@ -165,7 +165,8 @@ body {
     text-align: center;
 }
 
-#button-start-assignment {
+/* make a class */
+#button-start-assignment, #next-button {
     background-color:rgba(255, 111, 0, 0.856);
     color: whitesmoke;
     font-size: 15px;
@@ -196,7 +197,6 @@ body {
     margin: 5px 0px;
     border: 1px dashed rgb(21, 4, 131);
     border-radius: 5px;
-
 }
 
 .question-div-right {
