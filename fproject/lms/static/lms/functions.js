@@ -153,6 +153,7 @@ function showAssignment(assignment) {
             const buttonStartAssignment = 
             createEl('button', showAssignDiv, 'button-start-assignment');
             buttonStartAssignment.innerHTML = 'Start Assignment';
+            buttonStartAssignment.setAttribute('class', 'my-button');
             buttonStartAssignment.onclick = function() {
                 showQuestionsStudent(assignment);
             };
@@ -225,6 +226,7 @@ function showQuestion(questions, i, container, submission_id) {
     answerStudent.setAttribute('class', 'answer-input');
 
     const nextButton = createEl('button', container, 'next-button');
+    nextButton.setAttribute('class', 'my-button');
     nextButton.disabled = true;
     if (i===qLength-1) {
         nextButton.innerHTML = 'Finish';

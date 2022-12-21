@@ -41,15 +41,16 @@ function createAssignment() {
     questionList.innerHTML = '';
 
     const addQuestionButton = document.getElementById('add-question');
+    addQuestionButton.setAttribute('class', 'my-button');
     addQuestionButton.onclick = () => {
         const newQuestion = document.getElementById('question-form-empty').cloneNode(true);
         newQuestion.style.display = 'block';
         newQuestion.setAttribute('class', 'question-form');
         const questionCount = document.getElementsByClassName('question-form').length;
         newQuestion.setAttribute('id', 'question-form-'+questionCount);
-        const buttonDeleteQuestion = createEl('button', newQuestion);
+        const buttonDeleteQuestion = createEl('button', newQuestion, 'delete-question');
         buttonDeleteQuestion.innerHTML = 'Delete Question';
-        buttonDeleteQuestion.setAttribute('class', 'delete-question');
+        buttonDeleteQuestion.setAttribute('class', 'my-button');
         buttonDeleteQuestion.onclick = () => {
             newQuestion.remove();
         }
@@ -57,6 +58,7 @@ function createAssignment() {
     }
 
     const saveButton = document.getElementById('save-assignment');
+    saveButton.setAttribute('class', 'my-button');
     saveButton.addEventListener('click', () => {
         fetch('/create/assignment', {
             method: 'POST',
@@ -165,6 +167,7 @@ function studentsView(subject, group) {
         students.forEach((student) => {
             const studentEl = createEl('div', submissionsView);
             studentEl.innerHTML = student.name;
+            studentEl.setAttribute('class', 'student-subm-div')
             studentEl.onclick = () => studentSubmissionsView(subject, student);
         });
     });

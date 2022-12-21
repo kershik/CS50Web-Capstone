@@ -224,7 +224,7 @@ def create_answer(request):
     student_answer.save()
 
     if student_answer.text == question.answer:
-            submission.score += 1 * 100 // question.assignment.questions.count()
+        score += 1 * 100 // question.assigment.questions.count()
     submission.save()
 
     return JsonResponse({

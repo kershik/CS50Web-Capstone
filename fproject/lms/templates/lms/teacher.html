@@ -10,20 +10,22 @@
             <form id="create-assignment">
                 {{ form.as_p }}
             </form>
-            <form style="display:none" id="question-form-empty">
-                <p>
-                    <label>Question: </label>
-                    <input type="text" name="text"/>
-                </p>
-                <p>
-                    <label>Answer: </label>
-                    <input type="text" name="answer"/>
-                </p>
-            </form>
+            <div id="question-form-empty" style="display:none">
+                <form>
+                    <p>
+                        <div class='label-div'><label>Question:</label></div>
+                        <input type="text" name="text"/>
+                    </p>
+                    <p>
+                        <div class='label-div'><label>Answer:</label></div>
+                        <input type="text" name="answer"/>
+                    </p>
+                </form>
+            </div>
             <h3>Questions</h3>
             <div id="question-list"></div>
-            <button id="add-question">Add question</button>
-            <button id="save-assignment">Save</button>
+            <button id="add-question">Add Question</button>
+            <button id="save-assignment">Save Assignment</button>
         </div>
         <div id="show-assignment"></div>
         <div id="questions-container"></div>
