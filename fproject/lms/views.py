@@ -72,7 +72,7 @@ def register(request, type):
         if form.is_valid():
             user = form.save()
             login(request, user)
-            return HttpResponseRedirect(reverse("subjects"))
+            return HttpResponseRedirect(reverse(type.lower()))
     return render(request, "lms/register.html", {
             'type': type,
             'form': form
@@ -82,7 +82,13 @@ def subjects_view(request):
     if request.method == "GET":
         if request.user.role == 'STUDENT':
             student = StudentProfile.objects.get(user=request.user)
-            subjects = student.group.subjects.all()
+            try:
+                subjects = student.group.subjects.all()
+            except AttributeError:
+                # if admin hasn't set group for student yet
+                return JsonResponse({
+                    "message": "You have no subjects yet."
+                }, status=201)
         elif request.user.role == 'TEACHER':
             subjects = Subject.objects.filter(teachers__id=request.user.id)
         else:

@@ -33,9 +33,14 @@ function loadSubjects(container) {
     .then(subjects => {
         console.log(subjects);
 
-        subjects.forEach((subject) => {
-            createSubjDiv(subject, container);
-        });
+        if (subjects.message) {
+            const noSubjects = createEl('div', container, 'no-subjects');
+            noSubjects.innerHTML = subjects.message;
+        } else {
+            subjects.forEach((subject) => {
+                createSubjDiv(subject, container);
+            });
+        }
     });
 }
 
