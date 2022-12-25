@@ -27,7 +27,7 @@ class CustomUser(AbstractUser):
         return {
             "id": self.id,
             "username": self.username,
-            "name": self.first_name + self.last_name,
+            "name": self.first_name + ' ' + self.last_name,
             "email": self.email
         }
 
@@ -113,7 +113,7 @@ class Assignment(models.Model):
     def serialize(self):
         return {
             'id': self.id,
-            'title': self.title.capitalize(),
+            'title': self.title,
             'description': self.description,
             'subject': self.subject.title,
             'creator': self.creator.first_name+' '+self.creator.last_name,

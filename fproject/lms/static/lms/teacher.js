@@ -36,6 +36,7 @@ function createAssignment() {
     group.value = '';
     const deadline = document.getElementById('id_deadline');
     deadline.value = '';
+    deadline.setAttribute('placeholder', 'yyyy-mm-dd')
 
     const questionList = document.getElementById('question-list');
     questionList.innerHTML = '';
@@ -85,8 +86,8 @@ function createQuestions(assignment_id) {
         fetch('/create/question', {
             method: 'POST',
             body: JSON.stringify({
-                text: questions[i].elements['text'].value,
-                answer: questions[i].elements['answer'].value,
+                text: questions[i].children[0].elements['text'].value,
+                answer: questions[i].children[0].elements['answer'].value,
                 assignment_id: assignment_id
             })
         })

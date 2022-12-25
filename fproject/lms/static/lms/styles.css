@@ -136,9 +136,9 @@ body {
 }
 
 #login-form {
-    width: 50%;
-    margin-left: 25%;
-    margin-right: 25%;
+    width: 500px;
+    margin-left: auto;
+    margin-right: auto;
     margin-top: 20%;
     border: 1px dashed rgb(21, 4, 131);
     border-radius: 15px;
@@ -153,6 +153,22 @@ body {
     cursor: pointer;
     width: 70%;
     float: right;
+}
+
+#create {
+    padding-bottom: 10%;
+}
+
+#assign-form {
+    width: 100%;
+}
+
+#assign-form input {
+    padding: 3px 5px;
+    cursor: pointer;
+    width: 100%;
+    margin-top: 5px;
+    font-size: 15px;
 }
 
 #login-button, #save-assignment {
@@ -217,6 +233,8 @@ body {
     display: inline;
     width: 85%;
     float: right;
+    padding: 3px 5px;
+    font-size: 15px;
 }
 
 .label-div {

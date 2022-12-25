@@ -14,6 +14,7 @@ document.addEventListener('DOMContentLoaded', () => {
 function showSubmissions() {
     const submissionsView = document.getElementById('submissions-view');
     submissionsView.style.display = 'block';
+    submissionsView.innerHTML = '';
 
     document.getElementById('show-assignment').style.display = 'none';
     document.getElementById('subjects-view').style.display = 'none';
