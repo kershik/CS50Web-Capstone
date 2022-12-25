@@ -1,6 +1,5 @@
 from django.shortcuts import render
 from django.contrib.auth import authenticate, login, logout
-from django.db import IntegrityError
 from django.http import HttpResponse, HttpResponseRedirect, JsonResponse
 from django.urls import reverse
 from django.views.decorators.csrf import csrf_exempt
@@ -8,17 +7,19 @@ from django.contrib.auth.decorators import login_required
 import json
 from datetime import datetime
 
-from .models import CustomUser, Student, Teacher, StudentProfile, Group, Subject, Assignment, Question, Submission, StudentAnswer
+from .models import Student, StudentProfile, \
+    Group, Subject, Assignment, Question, Submission, StudentAnswer
 from .forms import StudentCreationForm, TeacherCreationForm, AssignmentCreationForm
 
 
-# Create your views here.
 def index(request):
      return render(request, 'lms/index.html')
 
+@login_required
 def student_view(request):
     return render(request, "lms/student.html")
 
+@login_required
 def teacher_view(request):
     subjects = Subject.objects.filter(teachers__id=request.user.id)
     form = AssignmentCreationForm(choices=subjects)
@@ -78,6 +79,7 @@ def register(request, type):
             'form': form
         })    
 
+@login_required
 def subjects_view(request):
     if request.method == "GET":
         if request.user.role == 'STUDENT':
@@ -102,6 +104,7 @@ def subjects_view(request):
             "error": "GET request required."
         }, status=400)
 
+@login_required
 def subject_view(request, subj_id):
     if request.method == "GET":
         subject = Subject.objects.get(id=subj_id)
@@ -111,6 +114,7 @@ def subject_view(request, subj_id):
             "error": "GET request required."
         }, status=400)
 
+@login_required
 def assigns_view(request, subj_id):
     if request.method == "GET":
         subject = Subject.objects.get(id=subj_id)
@@ -129,6 +133,7 @@ def assigns_view(request, subj_id):
             "error": "GET request required."
         }, status=400)
 
+@login_required
 def assign_view(request, assign_id):
     if request.method == "GET":
         assignment = Assignment.objects.get(id=assign_id)
@@ -138,6 +143,7 @@ def assign_view(request, assign_id):
             "error": "GET request required."
         }, status=400)
 
+@login_required
 @csrf_exempt
 def create_assignment(request):
     if request.method != "POST":
@@ -165,6 +171,7 @@ def create_assignment(request):
         "id": assignment.id
         }, status=201)
 
+@login_required
 @csrf_exempt
 def create_question(request):
     if request.method != "POST":
@@ -186,6 +193,7 @@ def create_question(request):
         "message": "Question created successfully."
         }, status=201)
 
+@login_required
 @csrf_exempt
 def create_submission(request):
     if request.method != "POST":
@@ -209,6 +217,7 @@ def create_submission(request):
         "id": submission.id
         }, status=201)
 
+@login_required
 @csrf_exempt
 def create_answer(request):
     if request.method != "POST":
@@ -237,6 +246,7 @@ def create_answer(request):
         "message": "Answer created successfully."
         }, status=201)
 
+@login_required
 def submission_view(request, submission_id):
     if request.method == "GET":
         submission = Submission.objects.get(id=submission_id)
@@ -246,7 +256,7 @@ def submission_view(request, submission_id):
             "error": "GET request required."
         }, status=400)
 
-    
+@login_required    
 def submissions_view(request): 
     if request.method == "GET":
         if request.user.role == 'STUDENT':
@@ -264,7 +274,7 @@ def submissions_view(request):
             "error": "GET request required."
         }, status=400)
  
-
+@login_required
 def groups_view(request, subj_id):
     if request.method == "GET":
         subject = Subject.objects.get(id=subj_id)
@@ -275,6 +285,7 @@ def groups_view(request, subj_id):
             "error": "GET request required."
         }, status=400)
 
+@login_required
 def students_view(request):
     if request.method == "GET":
         group = Group.objects.get(id=request.GET.get('group'))
