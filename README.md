@@ -76,8 +76,14 @@ python manage.py migrate
 python manage.py createsuperuser
 ```
 
-5. Visit the site and add ```/admin``` to the url (for example, ```http://127.0.0.1:8000/admin```).
+5. Run server.
 
-6. Log in with the username and password for admin user (see paragraph 4).
+```
+python manage.py runserver
+```
 
-7. Create subjects and groups. Assign teachers and groups to subjects. When a student signs up assign him to a group. 
+6. Visit the site and add ```/admin``` to the url (for example, ```http://127.0.0.1:8000/admin```).
+
+7. Log in with the username and password for admin user (see paragraph 4).
+
+8. Create subjects and groups. Assign teachers and groups to subjects. When a student signs up assign him to a group. 
